@@ -1,0 +1,5 @@
+[flake8]
+max-line-length = 119
+exclude = .idea, .mypy_cache, .git, __pycache__, venv, .venv
+show-source = True
+count = True
