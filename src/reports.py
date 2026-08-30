@@ -4,16 +4,17 @@ from typing import Any, Callable, Optional
 
 import pandas as pd
 
-from src.utils import read_xlsx
-
 
 def report(path: str = "report.txt") -> Callable:
     """Декоратор записывающий результаты работы функции в файл"""
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
-            result = func(*args, **kwargs)
-            with open(path, "w") as file:
+            try:
+                result = str(func(*args, **kwargs))
+            except Exception as e:
+                raise e
+            with open(path, "w", encoding="utf-8") as file:
                 file.write(result)
             return result
         return wrapper
@@ -23,7 +24,11 @@ def report(path: str = "report.txt") -> Callable:
 def spending_by_weekday(transactions: pd.DataFrame,
                         date: Optional[str] = None) -> pd.DataFrame:
     """Функция возвращает DataFrame со средним значением трат в каждый из дней недели
-    за последние три месяца (от переданной даты)."""
+    за последние три месяца (от текущей или от переданной даты в формате YYYY-MM-DD HH:MM:SS)."""
+    if (transactions.empty or
+            "Дата операции" not in transactions.columns or
+            "Сумма платежа" not in transactions.columns):
+        return pd.DataFrame()
     if date is None:
         end_date = datetime.today()
     else:
@@ -34,10 +39,10 @@ def spending_by_weekday(transactions: pd.DataFrame,
     transactions["День недели"] = transactions["Дата операции"].dt.day_name()
     transactions = transactions[transactions["Сумма платежа"] < 0]
     avg = transactions.groupby("День недели")["Сумма платежа"].mean().round(2)
-    return pd.DataFrame(avg)
-
-
-if __name__ == "__main__":
-    df = read_xlsx()
-    print(spending_by_weekday(df, date="12.12.2021"))
-    # print(spending_by_weekday(df))
+    day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    avg.index = pd.CategoricalIndex(avg.index, categories=day_order, ordered=True)
+    avg_sorted = avg.sort_index()
+    avg_sorted = avg_sorted.rename("Cредние траты")
+    avg_sorted_df = avg_sorted.reset_index()
+    avg_sorted_df["День недели"] = avg_sorted_df["День недели"].astype(str)
+    return avg_sorted_df

@@ -48,7 +48,10 @@ def get_top_transactions(df: pd.DataFrame) -> list[dict]:
         return []
     df.columns = ["date", "amount", "category", "description"]
     df.sort_values(by="amount", ascending=False, inplace=True)
-    df["date"] = df["date"].dt.strftime("%d.%m.%Y")
+    try:
+        df["date"] = df["date"].dt.strftime("%d.%m.%Y")
+    except AttributeError:
+        return []
     return df.head(5).astype(object).where(pd.notna(df), None).to_dict("records")
 
 
@@ -60,7 +63,7 @@ def get_currency_rates() -> list[dict]:
     currency_apikey = os.getenv("CURRENCY_API_KEY")
     params = {
         "get": "rates",
-        "pairs": ",".join([currency + "RUB" for currency in user_settings.get("user_currencies", {})]),
+        "pairs": ",".join([currency + "RUB" for currency in user_settings.get("user_currencies", [])]),
         "key": currency_apikey
     }
     response = requests.get("https://currate.ru/api/", params=params)
@@ -108,6 +111,8 @@ def process_data(date: str) -> str:
     except KeyError:
         return json.dumps({})
 
+    print(df.head(5).to_dict(orient="records"))
+
     processed_data = {
         "greeting": get_greeting(),
         "cards": get_cards(df),
@@ -119,4 +124,4 @@ def process_data(date: str) -> str:
 
 
 if __name__ == "__main__":
-    print(process_data("2021-12-21 00:00:00"))
+    print(get_currency_rates())
