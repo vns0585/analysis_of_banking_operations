@@ -129,7 +129,7 @@ def views_get_top_transactions_list() -> list:
 def views_user_settings() -> dict[str, list[str]]:
     return {
         "user_currencies": ["USD", "EUR", "GBP"],
-        "user_stocks": ["AAPL", "AMZN", "GOOGL", "MSFT", "TSLA"]
+        "user_stocks": ["AAPL"]
     }
 
 
@@ -151,3 +151,91 @@ def views_currency_result() -> list[dict]:
         {"currency": "EUR", "rate": 85.12},
         {"currency": "GBP", "rate": 95.68}
     ]
+
+
+@pytest.fixture
+def views_stock_response() -> dict:
+    return {
+            "ticker": "AAPL",
+            "price": 319.7
+    }
+
+
+@pytest.fixture
+def views_stock_result() -> list[dict]:
+    return [
+        {
+            "stock": "AAPL",
+            "price": 319.7
+        }
+    ]
+
+
+@pytest.fixture
+def process_data_result() -> str:
+    result = {
+                "greeting": "Доброе утро",
+                "cards": [
+                    {
+                        "currency": "USD",
+                        "rate": 73.46
+                    },
+                    {
+                        "currency": "EUR",
+                        "rate": 85.12
+                    },
+                    {
+                        "currency": "GBP",
+                        "rate": 95.68
+                    }
+                ],
+                "top_transactions": [
+                    {
+                        "date": "31.12.2021",
+                        "amount": -64.0,
+                        "category": "Супермаркеты",
+                        "description": "Колхоз 89200000000"
+                    },
+                    {
+                        "date": "31.12.2021",
+                        "amount": -78.05,
+                        "category": "Супермаркеты",
+                        "description": "Колхоз 8(961)000-00-00"
+                    },
+                    {
+                        "date": "31.12.2021",
+                        "amount": -118.12,
+                        "category": "Супермаркеты",
+                        "description": "Магнит +7 910 00-00-00"
+                    },
+                    {
+                        "date": "31.12.2021",
+                        "amount": -160.89,
+                        "category": "Супермаркеты",
+                        "description": "Колхоз +7-920-000-00-00"
+                    },
+                    {
+                        "date": "31.12.2021",
+                        "amount": -564.0,
+                        "category": "Различные товары",
+                        "description": "Ozon.ru +7 901 111 11 11"
+                    }
+                ],
+                "currency_rates": [
+                    {
+                        "currency": "USD",
+                        "rate": 64.18
+                    },
+                    {
+                        "currency": "EUR",
+                        "rate": 69.24
+                    }
+                ],
+                "stock_prices": [
+                    {
+                        "stock": "AAPL",
+                        "price": 319.7
+                    }
+                ]
+    }
+    return json.dumps(result, ensure_ascii=False, indent=4)

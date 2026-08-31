@@ -92,7 +92,7 @@ def get_stock_prices() -> list[dict]:
         if response.status_code == 200:
             stock_prices.append({"stock": stock, "price": response.json()["price"]})
         else:
-            stock_prices.append({"stock": stock, "price": "Ошибка загрузки. Попробуйте позже"})
+            stock_prices.append({})
     return stock_prices
 
 
@@ -110,9 +110,6 @@ def process_data(date: str) -> str:
         df = df[df["Дата операции"].between(start_date, end_date)]
     except KeyError:
         return json.dumps({})
-
-    print(df.head(5).to_dict(orient="records"))
-
     processed_data = {
         "greeting": get_greeting(),
         "cards": get_cards(df),
@@ -121,7 +118,3 @@ def process_data(date: str) -> str:
         "stock_prices": get_stock_prices()
     }
     return json.dumps(processed_data, ensure_ascii=False, indent=4)
-
-
-if __name__ == "__main__":
-    print(get_currency_rates())
