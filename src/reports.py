@@ -1,10 +1,10 @@
+import logging
+import os
 from datetime import datetime
 from functools import wraps
 from typing import Any, Callable, Optional
-import os
-import logging
-import pandas as pd
 
+import pandas as pd
 
 os.makedirs("logs", exist_ok=True)
 logger = logging.getLogger(__name__)
@@ -30,7 +30,8 @@ def report(path: str = "report.txt") -> Callable:
                 with open(path, "w", encoding="utf-8") as file:
                     file.write(result)
             except Exception as e:
-                logger.error(f"Результат функции {func.__name__} не был записан в файл {path}. Ошибка: {type(e).__name__}")
+                logger.error(f"Результат функции {func.__name__} не был записан в файл {path}."
+                             f" Ошибка: {type(e).__name__}")
             else:
                 logger.debug(f"Результат функции {func.__name__} успешно записан в файл {path}")
             return result

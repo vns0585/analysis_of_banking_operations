@@ -1,8 +1,8 @@
 import json
-import os
 import logging
-import pandas as pd
+import os
 
+import pandas as pd
 
 os.makedirs("logs", exist_ok=True)
 logger = logging.getLogger(__name__)
@@ -20,6 +20,7 @@ def read_xlsx(path: str = "data/operations.xlsx") -> pd.DataFrame:
     except Exception as e:
         logger.error(f"Произошла ошибка при чтении файла: {type(e).__name__}")
         return pd.DataFrame()
+
 
 def get_user_settings() -> dict:
     """Возвращает настройки пользователя из файла user_settings.json"""

@@ -1,8 +1,8 @@
 from os import remove
+from unittest.mock import patch
 
 import pandas as pd
 import pytest
-from unittest.mock import patch, Mock
 
 from src.reports import report, spending_by_weekday
 
