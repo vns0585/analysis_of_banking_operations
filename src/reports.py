@@ -1,8 +1,18 @@
 from datetime import datetime
 from functools import wraps
 from typing import Any, Callable, Optional
-
+import os
+import logging
 import pandas as pd
+
+
+os.makedirs("logs", exist_ok=True)
+logger = logging.getLogger(__name__)
+file_handler = logging.FileHandler("logs/reports.log", mode="w", encoding="utf-8")
+file_formatter = logging.Formatter("%(asctime)s %(filename)s %(funcName)s %(levelname)s %(message)s")
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.DEBUG)
 
 
 def report(path: str = "report.txt") -> Callable:
@@ -12,10 +22,17 @@ def report(path: str = "report.txt") -> Callable:
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             try:
                 result = str(func(*args, **kwargs))
+                logger.debug(f"Получен результат функции {func.__name__}: {result}")
             except Exception as e:
+                logger.error(f"В переданной функции {func.__name__} произошла ошибка: {type(e).__name__}")
                 raise e
-            with open(path, "w", encoding="utf-8") as file:
-                file.write(result)
+            try:
+                with open(path, "w", encoding="utf-8") as file:
+                    file.write(result)
+            except Exception as e:
+                logger.error(f"Результат функции {func.__name__} не был записан в файл {path}. Ошибка: {type(e).__name__}")
+            else:
+                logger.debug(f"Результат функции {func.__name__} успешно записан в файл {path}")
             return result
         return wrapper
     return decorator
@@ -28,10 +45,13 @@ def spending_by_weekday(transactions: pd.DataFrame,
     if (transactions.empty or
             "Дата операции" not in transactions.columns or
             "Сумма платежа" not in transactions.columns):
+        logger.warning("Переданные транзакции пусты, либо отсутствуют колонки \"Дата операции\", \"Сумма платежа\"")
         return pd.DataFrame()
     if date is None:
+        logger.info("Дата не передана, используется текущая дата")
         end_date = datetime.today()
     else:
+        logger.info(f"Получена дата: {date}")
         end_date = pd.to_datetime(date)
     start_date = pd.Timestamp(end_date) - pd.DateOffset(months=3)
     transactions["Дата операции"] = pd.to_datetime(transactions["Дата операции"], format="%d.%m.%Y %H:%M:%S")

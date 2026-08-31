@@ -2,6 +2,7 @@ from os import remove
 
 import pandas as pd
 import pytest
+from unittest.mock import patch, Mock
 
 from src.reports import report, spending_by_weekday
 
@@ -34,6 +35,16 @@ def test_report_func_exception() -> None:
         raise Exception
     with pytest.raises(Exception):
         my_function()
+
+
+def test_report_file_not_wrote() -> None:
+    with patch("builtins.open", side_effect=PermissionError) as mock_open:
+        @report("my_function.txt")
+        def my_function(x: str,
+                        y: str) -> str:
+            return x + y
+        my_function("Привет, ", "мир!")
+        mock_open.assert_called_once()
 
 
 def test_spending_by_weekday(reports_transactions: pd.DataFrame, reports_result: pd.DataFrame) -> None:
