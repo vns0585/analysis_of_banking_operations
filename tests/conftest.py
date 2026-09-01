@@ -177,16 +177,14 @@ def process_data_result() -> str:
                 "greeting": "Доброе утро",
                 "cards": [
                     {
-                        "currency": "USD",
-                        "rate": 73.46
+                        "last_digits": "5091",
+                        "total_spent": 564.0,
+                        "cashback": 5.64
                     },
                     {
-                        "currency": "EUR",
-                        "rate": 85.12
-                    },
-                    {
-                        "currency": "GBP",
-                        "rate": 95.68
+                        "last_digits": "7197",
+                        "total_spent": 421.06,
+                        "cashback": 4.21
                     }
                 ],
                 "top_transactions": [
@@ -224,11 +222,15 @@ def process_data_result() -> str:
                 "currency_rates": [
                     {
                         "currency": "USD",
-                        "rate": 64.18
+                        "rate": 73.46
                     },
                     {
                         "currency": "EUR",
-                        "rate": 69.24
+                        "rate": 85.12
+                    },
+                    {
+                        "currency": "GBP",
+                        "rate": 95.68
                     }
                 ],
                 "stock_prices": [

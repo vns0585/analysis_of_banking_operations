@@ -232,10 +232,10 @@ def test_get_stock_prices_api_key_none(mock_os_getenv: Mock,
 
 @patch("src.views.get_greeting")
 @patch("src.views.get_stock_prices")
-@patch("src.views.get_cards")
+@patch("src.views.get_currency_rates")
 @patch('src.views.read_xlsx')
 def test_process_data(mock_read_xlsx: Mock,
-                      mock_get_cards: Mock,
+                      mock_get_currency_rates: Mock,
                       mock_get_stock_prices: Mock,
                       mock_get_greeting: Mock,
                       utils_read_xlsx_data: pd.DataFrame,
@@ -243,13 +243,14 @@ def test_process_data(mock_read_xlsx: Mock,
                       views_stock_result: list,
                       process_data_result: dict) -> None:
     mock_read_xlsx.return_value = utils_read_xlsx_data
-    mock_get_cards.return_value = views_currency_result
+    mock_get_currency_rates.return_value = views_currency_result
     mock_get_stock_prices.return_value = views_stock_result
     mock_get_greeting.return_value = "Доброе утро"
     assert process_data("2021-12-31 23:59:59") == process_data_result
     mock_read_xlsx.assert_called_once()
-    mock_get_cards.assert_called_once()
+    mock_get_currency_rates.assert_called_once()
     mock_get_stock_prices.assert_called_once()
+    mock_get_greeting.assert_called_once()
 
 
 @patch('src.views.read_xlsx')
