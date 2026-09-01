@@ -56,7 +56,7 @@ def test_spending_by_weekday_empty_df() -> None:
 
 
 def test_spending_by_weekday_date(reports_transactions: pd.DataFrame, reports_result: pd.DataFrame) -> None:
-    result = reports_result[reports_result["День недели"] != "Sunday"]
+    result = reports_result[reports_result["День недели"] != "Воскресенье"]
     pd.testing.assert_frame_equal(spending_by_weekday(reports_transactions, "2026.08.30 00:00:00"), result)
 
 

@@ -66,4 +66,14 @@ def spending_by_weekday(transactions: pd.DataFrame,
     avg_sorted = avg_sorted.rename("Cредние траты")
     avg_sorted_df = avg_sorted.reset_index()
     avg_sorted_df["День недели"] = avg_sorted_df["День недели"].astype(str)
+    weekdays = {
+        "Monday": "Понедельник",
+        "Tuesday": "Вторник",
+        "Wednesday": "Среда",
+        "Thursday": "Четверг",
+        "Friday": "Пятница",
+        "Saturday": "Суббота",
+        "Sunday": "Воскресенье"
+    }
+    avg_sorted_df["День недели"] = avg_sorted_df["День недели"].replace(weekdays)
     return avg_sorted_df

@@ -24,4 +24,4 @@ def find_phone_numbers() -> str:
     else:
         result = df[df["Описание"].str.contains(r"(?:\+7|8)\s*[\(-]?\d{3}[\)-]?\s*\d{3}\s*[-]?\d{2}\s*[-]?\d{2}")]
         logger.debug("Выборка транзакций с номерами телефонов в описании произведена успешно")
-    return json.dumps(result.to_dict(orient="records"), ensure_ascii=False)
+    return json.dumps(result.to_dict(orient="records"), ensure_ascii=False, indent=4)
